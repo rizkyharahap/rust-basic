@@ -457,3 +457,153 @@ fn test_return_value_ownership() {
     println!("{}", first_name);
     println!("{}", last_name);
 }
+
+fn full_name_reference(first_name: &String, last_name: &String) -> String {
+    let full_name = format!("{} {}", first_name, last_name);
+
+    return full_name;
+}
+
+#[test]
+fn test_reference() {
+    let first_name = String::from("Rizki");
+    let last_name = String::from("Harahap");
+
+    let full_name = full_name_reference(&first_name, &last_name);
+
+    println!("{}", full_name);
+    println!("{}", first_name);
+    println!("{}", last_name);
+}
+
+fn chance_value(value: &mut String) {
+    value.push_str(" Test");
+}
+
+#[test]
+fn test_value_borrowing() {
+    let mut value = String::from("Rizki");
+
+    chance_value(&mut value);
+    println!("{}", value);
+}
+
+// fn get_full_name(first_name: &String, last_name: &String) -> &String {
+//     let full_name = format!("{} {}", first_name, last_name);
+
+//     return &full_name;
+// }
+
+// #[test]
+// fn test_dangling_pointer() {
+//     let first_name = String::from("Rizki");
+//     let last_name = String::from("Harahap");
+
+//     let full_name = get_full_name(&first_name, &last_name);
+
+//     println!("{}", full_name);
+//     println!("{}", first_name);
+//     println!("{}", last_name);
+// }
+
+#[test]
+fn test_slice_reference() {
+    let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let slice1 = &array[..];
+    println!("{:?}", slice1);
+
+    let slice2 = &array[0..5];
+    println!("{:?}", slice2);
+
+    let slice3 = &array[5..];
+    println!("{:?}", slice3);
+}
+
+struct Nothing;
+
+#[test]
+fn test_struct_without_field() {
+    let _nothing1 = Nothing;
+    let _nothing2 = Nothing {};
+}
+
+struct Person {
+    first_name: String,
+    middle_name: String,
+    last_name: String,
+    age: u8,
+}
+
+impl Person {
+    fn say_hello(&self, name: &str) {
+        println!("Hello {}, my name is {}", name, self.first_name);
+    }
+}
+
+fn print_person(person: &Person) {
+    println!(
+        "{} {} {}",
+        person.first_name, person.middle_name, person.last_name
+    );
+
+    println!("{}", person.age);
+}
+
+#[test]
+fn test_struct_person() {
+    let person = Person {
+        first_name: String::from("Rizki"),
+        middle_name: String::from("Mahfuddin"),
+        last_name: String::from("Harahap"),
+        age: 25,
+    };
+
+    print_person(&person);
+
+    let person2 = Person { ..person };
+    print_person(&person2);
+
+    let person3 = Person {
+        first_name: person2.first_name.clone(),
+        middle_name: person2.middle_name.clone(),
+        last_name: person2.last_name.clone(),
+        ..person2
+    };
+    print_person(&person2);
+    print_person(&person3);
+}
+
+#[test]
+fn test_method() {
+    let person = Person {
+        first_name: String::from("Rizki"),
+        middle_name: String::from("Mahfuddin"),
+        last_name: String::from("Harahap"),
+        age: 25,
+    };
+
+    person.say_hello("Madhon");
+    print_person(&person);
+}
+
+struct GeoPoint(f64, f64);
+
+impl GeoPoint {
+    fn new(long: f64, lat: f64) -> GeoPoint {
+        return GeoPoint(long, lat);
+    }
+}
+
+#[test]
+fn test_tuple_struct() {
+    let geo_point = GeoPoint(-6.234324, 100.34343);
+    println!("{}", geo_point.0);
+    println!("{}", geo_point.1);
+}
+
+#[test]
+fn test_associated_function() {
+    let geo_point = GeoPoint::new(10.0, 10.0);
+    println!("{}", geo_point.0);
+    println!("{}", geo_point.1);
+}
