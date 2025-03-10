@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<img src="../../assets/img/service-feature.png"  alt="" class="tengah">
+<p><h1 style="text-align: left;">Bantuan Kendala</h1></p>
+
+    <p>Hubungi Contact Center dibawah ini apabila mengalami kendala, atau baca <a href="#faq"><strong>Panduan Kendala Umum</strong></a></p>
+	
+
+
+<div class="divTable orangeTable">
+<div class="divTableHeading">
+<div class="divTableRow">
+<div class="divTableHead">Contact Center Asuransi</div>
+</div>
+</div>
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell">
+
+<div class="content">
+<div>
+<img src="img/logo-MICC-Acrylic.png" class="icon logomi">
+</div>
+
+<div>
+<img src="img/phone-call.png" class="icon">
+Managed Care <a href="tel:14072"><strong>14072</strong></a> 
+<a id="faq"></a>
+<br>
+<img src="img/phone-call.png" class="icon">
+Indemnity <a href="tel:14073"><strong>14073</strong></a> 
+</div>
+
+
+</div>
+<em>Jam operasional Contact Center Mandiri Inhealth, Senin-Minggu 24 Jam</em>
+
+
+
+</div>
+</div>
+</div>
+</div>
+
+
+<p><h2>Panduan Kendala Umum</h2></p>
+
+ <ul>
+ 
+  <li>
+    <input type="checkbox" checked>
+    <i></i>
+    <h3>Kendala Umum</h3>
+    <p>Pastikan kamu telah menggunakan FitAja! versi terbaru. <a href="https://fitaja.id/redirect.php"  target="_blank">Click disini untuk melakukan update</a></p>
+  </li>
+  
+  
+  <li>
+    <input type="checkbox" checked>
+    <i></i>
+    <h3>Mengapa saya harus melakukan <br>verifikasi data kartu asuransi lagi?</h3>
+    <p>FitAja! versi terbaru telah menggunakan nomor handphone untuk kemudahan login pengguna. Verifikasi ulang kartu asuransi diperlukan untuk melayani kamu sebagai peserta asuransi aktif</p>
+  </li>
+  
+    <li>
+    <input type="checkbox" checked>
+    <i></i>
+    <h3>Tidak ingat nomor kartu asuransi</h3>
+    <p>Jika kamu tidak ingat nomor kartu asuransi atau kartu asuransi hilang, harap hubungi PIC dari Badan Usaha kamu atau hubungi Contact Center Asuransi </p>
+  </li>
+  
+  
+  
+  <li>
+    <input type="checkbox" checked>
+    <i></i>
+    <h3>Gagal verifikasi data kartu asuransi </h3>
+    <p><strong>Data tidak sesuai </strong><br>
+	Pastikan nomor kartu asuransi dan tanggal lahir yang dimasukkan benar. Apabila masih terjadi kendala harap hubungi Contact Center.</p>
+	
+	<p><strong>Masa berlaku polis asuransi telah habis</strong><br>
+	Masukkan nomor kartu asuransi lain yang masih aktif atau hubungi Contact Center untuk memutuskan kartu asuransi dan kamu dapat menghubungkan kartu asuransi lagi setelah berhasil masuk ke FitAja!.</p>
+  </li>
+  
+  
+   <li>
+    <input type="checkbox" checked>
+    <i></i>
+    <h3>Gagal menghubungkan kartu asuransi </h3>
+    <p><strong>Data tidak sesuai / Data tidak cocok </strong><br>
+	Pastikan nomor kartu asuransi dan tanggal lahir yang dimasukkan benar. Apabila masih terjadi kendala harap hubungi Contact Center FitAja!.</p>
+	
+	<p><strong>Masa berlaku polis asuransi telah habis</strong><br>
+	Masukkan nomor kartu asuransi lain yang masih aktif. </p>
+	
+	
+	<p><strong>Nomor kartu asuransi telah terdaftar di nomor handphone lain</strong><br>
+	Kartu asuransi yang ingin dihubungkan telah terdaftar di akun dengan nomor handpohone lain. Silahkan login FitAja! menggunakan nomor handphone kamu yang lain. Apabila masih terjadi kendala harap hubungi Contact Center Asuransi. </p>
+
+  <p><strong>Belum Dapat Menghubungkan Kartu</strong><br>
+	Asuransi dan perusahaan kamu belum bekerjasama dengan FitAja!, atau tidak memberikan izin aliran data kepada FitAja! untuk. Harap hubungi Contact Center Asuransi untuk informasi lebih lengkap. </p>
+  
+  </li>
+  
+  
+  <li>
+    <input type="checkbox" checked>
+    <i></i>
+    <h3>Nomor handphone telah tidak aktif</h3>
+    <p>Harap hubungi Contact Center untuk melakukan perubahan data nomor handphone, atau untuk memutuskan kartu asuransi dari nomor handphone yang telah tidak aktif.</p>
+  </li>
+  
+  
+</ul>   
+
+<script type="text/javascript">
+  var noka        = new URL(window.location).searchParams.get("noka");
+  var vLchat      = 'inhealth_fitaja';
+  window.vLchat   = vLchat;
+  window.noka     = noka;
+</script>
+<script src="https://micc-dev.vads.co.id/livechat/lc1.0/assets/js/jquery-1.11.0.min.js"></script>
+<script>
+  if(noka) {
+    $.getScript("https://micc-dev.vads.co.id/livechat/lc1.0/runchat.js", function() {
+        // Call the initialization function manually
+        console.log("reload");
+      });
+    }
+</script>
+
+<!-- <script type="text/javascript" src="https://micc-dev.vads.co.id/livechat/lc1.0/runchat.js"></script> -->
+<!-- <script>
+if(noka){
+  var script = document.createElement('script');
+script.onload = function () {
+    //do stuff with the script
+};
+script.src = something;
+
+document.head.appendChild(script); 
+    document.write('<script src=\"https://micc-dev.vads.co.id/livechat/lc1.0/assets/js/jquery-1.11.0.min.js\" type=\"text/javascript\"><\/script>');
+}
+</script> -->
+
+</body>
+</html>

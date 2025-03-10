@@ -1,3 +1,29 @@
+mod first;
+mod model;
+mod second;
+mod third;
+
+use first::say_hello;
+use second::say_hello as say_hello_second;
+
+#[test]
+fn test_use() {
+    say_hello();
+    say_hello_second();
+}
+
+#[test]
+fn test_module() {
+    let user = model::User {
+        first_name: String::from("Rizki"),
+        middle_name: String::from("Mahfuddin"),
+        last_name: String::from("Harahap"),
+        age: 23,
+    };
+
+    user.say_hello("Budi");
+}
+
 fn main() {
     println!("Hello, world!");
 }
@@ -606,4 +632,164 @@ fn test_associated_function() {
     let geo_point = GeoPoint::new(10.0, 10.0);
     println!("{}", geo_point.0);
     println!("{}", geo_point.1);
+}
+
+enum Level {
+    Regular,
+    Premium,
+    Platinum,
+}
+
+#[test]
+fn test_enum() {
+    let level = Level::Premium;
+
+    match level {
+        Level::Regular => {
+            println!("Regular")
+        }
+
+        Level::Premium => {
+            println!("Premium")
+        }
+
+        Level::Platinum => {
+            println!("Platinum")
+        }
+    }
+}
+
+enum Payment {
+    // card number
+    CreditCart(String),
+    // bank name, account number
+    BankTransfer(String, String),
+    // ewallet name, ewallet number
+    EWallet(String, i32),
+}
+
+impl Payment {
+    fn pay(&self, amount: u32) {
+        match self {
+            Payment::CreditCart(number) => {
+                println!("Paying with credit card {} amount {}", number, amount);
+            }
+            Payment::BankTransfer(bank, number) => {
+                println!(
+                    "Paying with bank transfer {} {} amount {}",
+                    bank, number, amount
+                );
+            }
+            Payment::EWallet(wallet, number) => {
+                println!(
+                    "Paying with e-wallet {} {} amount {}",
+                    wallet, number, amount
+                );
+            }
+        }
+
+        println!("Paying amount {}", amount,)
+    }
+}
+
+#[test]
+fn test_enum_data() {
+    let _payment1 = Payment::CreditCart(String::from("1234567890"));
+    _payment1.pay(10000000);
+
+    let _payment2 = Payment::BankTransfer(String::from("BCA"), String::from("0987654"));
+    _payment2.pay(20000000);
+
+    let _payment3 = Payment::EWallet(String::from("Gopay"), 12343242);
+    _payment3.pay(30000000);
+}
+
+#[test]
+fn test_match_value() {
+    let name = "Joko";
+
+    match name {
+        "Rizki" | "Riski" | "Rizky" => {
+            println!("Hello Rizki");
+        }
+        "Harahap" => {
+            println!("Hello Rizki");
+        }
+        _ => {
+            println!("Who are you?");
+        }
+    }
+}
+
+#[test]
+fn test_range_patterns() {
+    let value = 100;
+
+    let grade = match value {
+        75..=100 => "Great",
+        50..=74 => "Good",
+        25..=49 => "Not Bad",
+        0..=24 => "Bad",
+        _ => "Invalid Value",
+    };
+
+    println!("{}", grade);
+}
+
+#[test]
+fn test_struct_patterns() {
+    let point = GeoPoint::new(0.0, 1.0);
+
+    match point {
+        GeoPoint(long, 0.0) => {
+            println!("long : {}", long);
+        }
+
+        GeoPoint(0.0, lat) => {
+            println!("at : {}", lat);
+        }
+
+        GeoPoint(long, lat) => {
+            println!("long : {}, lat : {}", long, lat);
+        }
+    }
+
+    let person = Person {
+        first_name: String::from("Rizki"),
+        middle_name: String::from("Mahfuddin"),
+        last_name: String::from("Harahap"),
+        age: 25,
+    };
+
+    match person {
+        Person {
+            first_name,
+            last_name,
+            ..
+        } => {
+            println!("First Name: {}, Last Name: {}", first_name, last_name)
+        }
+    }
+}
+
+type Age = u8;
+type IdentityNumber = String;
+
+struct Customer {
+    id: IdentityNumber,
+    name: String,
+    age: Age,
+}
+
+type Pelanggan = Customer;
+
+#[test]
+fn test_type_alias() {
+    let customer = Customer {
+        id: String::from("12343242"),
+        name: String::from("Rizki"),
+        age: 20,
+    };
+
+    println!("{} {} {}", customer.id, customer.name, customer.age);
 }
