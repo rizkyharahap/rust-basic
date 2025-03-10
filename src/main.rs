@@ -793,3 +793,245 @@ fn test_type_alias() {
 
     println!("{} {} {}", customer.id, customer.name, customer.age);
 }
+
+trait CanSayHello {
+    fn hello(&self) -> String {
+        return String::from("Hello matafaka");
+    }
+
+    fn say_hello(&self) -> String;
+    fn say_hello_to(&self, name: &str) -> String;
+}
+
+impl CanSayHello for Person {
+    fn say_hello(&self) -> String {
+        return format!("Hello, my name is {}", self.first_name);
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        return format!("Hello {}, my name is {}", name, self.first_name);
+    }
+}
+
+trait CanSayGoodbye {
+    fn say_goodbye(&self) -> String;
+    fn say_goodbye_to(&self, name: &str) -> String;
+}
+
+impl CanSayGoodbye for Person {
+    fn say_goodbye(&self) -> String {
+        return format!("Goodbye, my name is {}", self.first_name);
+    }
+
+    fn say_goodbye_to(&self, name: &str) -> String {
+        return format!("Goodbye {}, my name is {}", name, self.first_name);
+    }
+}
+
+fn say_hello_trait(value: &impl CanSayHello) {
+    println!("{}", value.say_hello());
+}
+
+fn hello_and_goodbye(value: &(impl CanSayHello + CanSayGoodbye)) {
+    println!("{}, {}", value.say_hello(), value.say_goodbye())
+}
+
+#[test]
+fn test_trait() {
+    let person = Person {
+        first_name: String::from("Rizki"),
+        middle_name: String::from("Mahfuddin"),
+        last_name: String::from("Harahap"),
+        age: 25,
+    };
+
+    println!("{}", person.say_hello_to("Budi"));
+    println!("{}", person.hello());
+
+    say_hello_trait(&person);
+
+    println!("{}", person.say_goodbye());
+    println!("{}", person.say_goodbye_to("Budi"));
+
+    hello_and_goodbye(&person);
+
+    println!("{}", CanSayHello::say_hello(&person));
+    Person::say_hello(&person, "Budi");
+}
+
+struct SimplePerson {
+    name: String,
+}
+
+impl CanSayGoodbye for SimplePerson {
+    fn say_goodbye(&self) -> String {
+        return format!("Goodbye, my name is {}", self.name);
+    }
+
+    fn say_goodbye_to(&self, name: &str) -> String {
+        return format!("Goodbye {}, my name is {}", name, self.name);
+    }
+}
+
+fn create_person(name: String) -> impl CanSayGoodbye {
+    return SimplePerson { name };
+}
+
+#[test]
+fn test_return_trait() {
+    let person = create_person(String::from("Rizki"));
+
+    println!("{}", person.say_goodbye());
+    println!("{}", person.say_goodbye_to("Budi"));
+}
+
+trait CanSay: CanSayHello + CanSayGoodbye {
+    fn say(&self) {}
+}
+
+struct SimpleMan {
+    name: String,
+}
+
+impl CanSayHello for SimpleMan {
+    fn say_hello(&self) -> String {
+        return format!("Hello, my name is {}", self.name);
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        return format!("Hello {}, my name is {}", name, self.name);
+    }
+}
+
+impl CanSayGoodbye for SimpleMan {
+    fn say_goodbye(&self) -> String {
+        return format!("Goodbye, my name is {}", self.name);
+    }
+
+    fn say_goodbye_to(&self, name: &str) -> String {
+        return format!("Goodbye {}, my name is {}", name, self.name);
+    }
+}
+
+impl CanSay for SimpleMan {
+    fn say(&self) {
+        println!("{}", self.say_hello());
+        println!("{}", self.say_goodbye());
+    }
+}
+
+#[test]
+fn test_super_trait() {
+    let person = SimpleMan {
+        name: String::from("Rizki"),
+    };
+
+    person.say();
+}
+
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    fn get_x(&self) -> &T {
+        return &self.x;
+    }
+
+    fn get_y(&self) -> &T {
+        return &self.y;
+    }
+}
+
+#[test]
+fn test_generic_struct() {
+    let _integer = Point::<i32> { x: 60, y: 110 };
+    let _float = Point::<f64> {
+        x: 60.21342,
+        y: 110.23423,
+    };
+}
+
+enum Value<T> {
+    NONE,
+    VALUE(T),
+}
+
+#[test]
+fn test_generic_enum() {
+    let value = Value::<i32>::VALUE(10);
+
+    match value {
+        Value::NONE => {
+            println!("none");
+        }
+        Value::VALUE(value) => {
+            println!("value {}", value);
+        }
+    }
+}
+
+struct Hi<T: CanSayGoodbye> {
+    value: T,
+}
+
+#[test]
+fn test_generic_struct_with_trait() {
+    let hi = Hi::<SimplePerson> {
+        value: SimplePerson {
+            name: String::from("Rizki"),
+        },
+    };
+
+    println!("{}", hi.value.name);
+}
+
+fn min<T: PartialOrd>(value1: T, value2: T) -> T {
+    if value1 < value2 {
+        return value1;
+    } else {
+        return value2;
+    }
+}
+
+#[test]
+fn test_generic_function() {
+    let value = min::<i32>(20, 10);
+
+    println!("{}", value);
+}
+
+struct Test {
+    a: i32,
+}
+
+#[test]
+fn test_generic_method() {
+    let point = Point { x: 7, y: 20 };
+    println!("{}", point.get_x());
+    println!("{}", point.get_y());
+    println!("{}", point.get_value());
+
+    let point_str = Point::<Test> {
+        x: Test { a: 12 },
+        y: Test { a: 12 },
+    };
+    println!("{}", point_str.get_x().a);
+}
+
+trait GetValue<T>
+where
+    T: PartialOrd,
+{
+    fn get_value(&self) -> &T;
+}
+
+impl<T> GetValue<T> for Point<T>
+where
+    T: PartialOrd,
+{
+    fn get_value(&self) -> &T {
+        return &self.x;
+    }
+}
