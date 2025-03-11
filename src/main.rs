@@ -1035,3 +1035,218 @@ where
         return &self.x;
     }
 }
+
+#[test]
+fn test_iterator() {
+    let array = [1, 2, 3, 4, 5];
+    let mut iterator = array.iter();
+
+    while let Some(value) = iterator.next() {
+        println!("{}", value);
+    }
+
+    for value in iterator {
+        println!("{}", value);
+    }
+}
+
+#[test]
+fn test_iterator_method() {
+    let vector = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    println!("Vector: {:?}", vector);
+
+    let sum: i32 = vector.iter().sum();
+    println!("Sum: {:?}", sum);
+
+    let count = vector.iter().count();
+    println!("Count: {:?}", count);
+
+    let double: Vec<i32> = vector.iter().map(|x| x * 2).collect();
+    println!("Double: {:?}", double);
+
+    let odd: Vec<&i32> = vector.iter().filter(|x| *x % 2 != 0).collect();
+    println!("Odd: {:?}", odd);
+}
+
+fn connect_database(host: Option<String>) {
+    match host {
+        None => {
+            panic!("No database host provided");
+        }
+        Some(host) => {
+            println!("Connecting to database at {}", host);
+        }
+    }
+}
+
+#[test]
+fn test_unrecoverable_error_handling() {
+    connect_database(Some(String::from("localhost")));
+    // connect_database(None); // will panic
+}
+
+fn connect_cache(host: Option<String>) -> Result<String, String> {
+    match host {
+        None => Err("No cache host provided".to_string()),
+        Some(host) => Ok(host),
+    }
+}
+
+#[test]
+fn test_recoverable_error_handling() {
+    let cache = connect_cache(Some("localhost".to_string()));
+
+    // let cache = connect_cache(None);
+
+    match cache {
+        Ok(host) => {
+            println!("Success connect to host: {}", host);
+        }
+
+        Err(error) => {
+            println!("Error with message: {}", error);
+        }
+    }
+}
+
+fn connect_email(host: Option<String>) -> Result<String, String> {
+    match host {
+        None => Err("No email host provided".to_string()),
+        Some(host) => Ok(host),
+    }
+}
+
+fn connect_application(host: Option<String>) -> Result<String, String> {
+    // let cache = connect_cache(host.clone());
+
+    // match cache {
+    //     Ok(host) => {
+    //         println!("Success connect to host: {}", host);
+    //     }
+    //     Err(error) => {
+    //         return Err(error);
+    //     }
+    // };
+
+    // let email = connect_email(host.clone());
+
+    // match email {
+    //     Ok(host) => {
+    //         println!("Success connect to host: {}", host);
+    //     }
+    //     Err(error) => {
+    //         return Err(error);
+    //     }
+    // };
+
+    connect_cache(host.clone())?;
+    connect_email(host.clone())?;
+
+    return Ok("Connected to application".to_string());
+}
+
+#[test]
+fn test_question_mark_operator() {
+    let result = connect_application(Some("localhost".to_string()));
+
+    // let result = connect_application(None);
+
+    match result {
+        Err(err) => {
+            println!("Error with message: {}", err)
+        }
+        Ok(host) => {
+            println!("Success connect with application: {}", host)
+        }
+    };
+}
+
+#[test]
+fn test_dangling_reference() {
+    let r: &i32;
+
+    {
+        let x = 3;
+        // r = &x; // will be error cause borrowed value does not live long enough
+    }
+
+    r = &4;
+
+    println!("r = {}", r);
+}
+
+fn longest<'a>(value1: &'a str, value2: &'a str) -> &'a str {
+    if value1.len() > value2.len() {
+        return value1;
+    }
+
+    return value2;
+}
+
+#[test]
+fn test_lifetime_annotation() {
+    let value1 = "Rizki";
+    let value2 = "Harahap";
+    let result = longest(value1, value2);
+
+    println!("result: {}", result);
+}
+
+struct Student<'a, 'b> {
+    name: &'a str,
+    last_name: &'b str,
+}
+
+impl<'a, 'b> Student<'a, 'b> {
+    fn longest_name(&self, student: &Student<'a, 'b>) -> &'a str {
+        if self.name.len() > student.name.len() {
+            return self.name;
+        }
+
+        return student.name;
+    }
+}
+
+fn longest_student_name<'a, 'b>(student1: &Student<'a, 'b>, student2: &Student<'a, 'b>) -> &'a str {
+    if student1.name.len() > student2.name.len() {
+        return student1.name;
+    }
+
+    return student2.name;
+}
+
+#[test]
+fn test_lifetime_annotation_on_struct() {
+    let student1 = Student {
+        name: "Rizki",
+        last_name: "Rizki",
+    };
+    let student2 = Student {
+        name: "Harahap",
+        last_name: "Harahap",
+    };
+    let result = longest_student_name(&student1, &student2);
+    println!("result: {}", result);
+
+    let result = student1.longest_name(&student2);
+    println!("result: {}", result);
+}
+
+struct Teacher<'a, ID>
+where
+    ID: Ord,
+{
+    id: ID,
+    name: &'a str,
+}
+
+#[test]
+fn test_lifetime_annotation_on_generic() {
+    let teacher = Teacher::<i32> {
+        id: 10,
+        name: "Rizki",
+    };
+
+    println!("{}", teacher.id);
+    println!("{}", teacher.name);
+}
