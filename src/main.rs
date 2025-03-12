@@ -3,6 +3,15 @@ mod model;
 mod second;
 mod third;
 
+use std::{
+    cell::RefCell,
+    collections::{HashMap, HashSet},
+    fmt::{Debug, Formatter},
+    ops::{Add, Deref},
+    rc::Rc,
+    result,
+};
+
 use first::say_hello;
 use second::say_hello as say_hello_second;
 
@@ -1036,6 +1045,148 @@ where
     }
 }
 
+struct Apple {
+    quantity: i32,
+}
+
+impl Add for Apple {
+    type Output = Apple;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        return Apple {
+            quantity: self.quantity + rhs.quantity,
+        };
+    }
+}
+
+#[test]
+fn test_operator_add() {
+    let apple1 = Apple { quantity: 10 };
+    let apple2 = Apple { quantity: 20 };
+
+    let result = apple1 + apple2;
+
+    println!("{}", result.quantity);
+}
+
+fn double(value: Option<i32>) -> Option<i32> {
+    match value {
+        None => None,
+        Some(i) => Some(1 * 2),
+    }
+}
+
+#[test]
+fn test_option() {
+    let result = double(Option::Some(10));
+    println!("{:?}", result);
+
+    let result = double(Option::None);
+    println!("{:?}", result);
+}
+
+struct Category {
+    id: String,
+    name: String,
+}
+
+impl Debug for Category {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Category")
+            .field("id", &self.id)
+            .field("name", &self.name)
+            .finish()
+    }
+}
+
+#[test]
+fn test_formatting() {
+    let category = Category {
+        id: String::from("GADGET"),
+        name: String::from("Gadget"),
+    };
+
+    println!("{:?}", category)
+}
+
+#[test]
+fn test_closure() {
+    let sum = |val1: i32, val2: i32| -> i32 {
+        return val1 + val2;
+    };
+
+    let result = sum(1, 2);
+    println!("{}", result);
+}
+
+fn print_with_filter(value: String, filter: fn(String) -> String) {
+    let result = filter(value);
+    println!("Result: {}", result);
+}
+
+#[test]
+fn feature() {
+    print_with_filter(String::from("Rizki"), |value: String| -> String {
+        return value.to_uppercase();
+    });
+}
+
+fn to_uppercase(value: String) -> String {
+    return value.to_uppercase();
+}
+
+fn print_string(value1: String, value2: String) {
+    println!("value1: {}, value2 {}", value1, value2);
+}
+
+#[test]
+fn test_function_as_closure() {
+    print_with_filter(String::from("Rizki"), to_uppercase);
+
+    print_string(String::from("Rizki"), to_uppercase(String::from("Rizki")));
+}
+
+#[test]
+fn test_vector() {
+    let mut names = Vec::<String>::new();
+    names.push(String::from("Rizki"));
+    names.push(String::from("Mahfuddin"));
+    names.push(String::from("Harahap"));
+
+    for name in &names {
+        println!("{}", name)
+    }
+}
+
+#[test]
+fn test_hash_map() {
+    let mut map: HashMap<String, String> = HashMap::new();
+
+    map.insert(String::from("name"), String::from("Rizki"));
+    map.insert(String::from("age"), String::from("25"));
+
+    let name = map.get("name");
+    let age = map.get("age");
+
+    println!("{} {}", name.unwrap(), age.unwrap());
+}
+
+#[test]
+fn test_hash_set() {
+    let mut set: HashSet<String> = HashSet::new();
+
+    set.insert(String::from("Rizki"));
+    set.insert(String::from("Rizki"));
+    set.insert(String::from("Mahfuddin"));
+    set.insert(String::from("Mahfuddin"));
+    set.insert(String::from("Harahap"));
+    set.insert(String::from("Harahap"));
+
+    for value in &set {
+        println!("{}", value)
+    }
+}
+
 #[test]
 fn test_iterator() {
     let array = [1, 2, 3, 4, 5];
@@ -1249,4 +1400,245 @@ fn test_lifetime_annotation_on_generic() {
 
     println!("{}", teacher.id);
     println!("{}", teacher.name);
+}
+
+#[derive(Debug, PartialEq, PartialOrd)]
+struct Company {
+    name: String,
+    location: String,
+    website: String,
+}
+
+#[test]
+fn test_attribute_debug() {
+    let company1 = Company {
+        name: "Rust".to_string(),
+        location: "Indonesia".to_string(),
+        website: "Website".to_string(),
+    };
+
+    let company2 = Company {
+        name: "Rust".to_string(),
+        location: "Indonesia".to_string(),
+        website: "Website".to_string(),
+    };
+
+    let company3 = Company {
+        name: "Rust".to_string(),
+        location: "Indonesia".to_string(),
+        website: "Website".to_string(),
+    };
+
+    println!("{:?}", company1);
+    println!("{}", company1 == company2);
+    println!("{}", company1 > company2);
+    println!("{}", company2 > company3);
+}
+
+fn display_number(value: i32) {
+    println!("value: {}", value);
+}
+
+fn display_number_reference(value: &i32) {
+    println!("value: {}", value);
+}
+
+#[test]
+fn test_box() {
+    let value = Box::new(10);
+    println!("value: {}", value);
+    display_number(*value);
+    display_number_reference(&value);
+}
+
+#[derive(Debug)]
+enum ProductCategory {
+    Of(String, Box<ProductCategory>),
+    End,
+}
+
+#[test]
+fn test_box_enum() {
+    let category = ProductCategory::Of(
+        "Laptop".to_string(),
+        Box::new(ProductCategory::Of(
+            "Dell".to_string(),
+            Box::new(ProductCategory::End),
+        )),
+    );
+
+    println!("{:?}", category);
+}
+
+#[test]
+fn test_derefence() {
+    let value1 = Box::new(10);
+    let value2 = Box::new(20);
+
+    let result = *value1 * *value2;
+
+    println!("{}", result);
+}
+
+struct MyValue<T> {
+    value: T,
+}
+
+impl<T> Deref for MyValue<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        return &self.value;
+    }
+}
+
+#[test]
+fn test_derefence_struct() {
+    let value = MyValue { value: 10 };
+
+    let real_value = *value;
+
+    println!("{}", real_value);
+}
+
+fn say_hello_reference(name: &String) {
+    println!("Hello, {}", name);
+}
+
+#[test]
+fn test_deref_reference() {
+    let name = MyValue {
+        value: "Rizki".to_string(),
+    };
+    say_hello_reference(&name);
+}
+
+struct Book {
+    title: String,
+}
+
+impl Drop for Book {
+    fn drop(&mut self) {
+        println!("Dropping book {}", &self.title);
+    }
+}
+
+#[test]
+fn test_drop() {
+    let book = Book {
+        title: "Rust Programming".to_string(),
+    };
+    println!("{}", book.title);
+}
+
+enum Brand {
+    Of(String, Rc<Brand>),
+    End,
+}
+
+#[test]
+fn test_multiple_ownership() {
+    let apple = Rc::new(Brand::Of("Apple".to_string(), Rc::new(Brand::End)));
+    println!("Apple reference count: {}", Rc::strong_count(&apple));
+
+    let laptop = Brand::Of("Laptop".to_string(), Rc::clone(&apple));
+    println!("Apple reference count: {}", Rc::strong_count(&apple));
+
+    {
+        let smarthphone = Brand::Of("Smarthphone".to_string(), Rc::clone(&apple));
+        println!("Apple reference count: {}", Rc::strong_count(&apple));
+    }
+
+    println!("Apple reference count: {}", Rc::strong_count(&apple));
+}
+
+#[derive(Debug)]
+struct Seller {
+    name: RefCell<String>,
+    active: RefCell<bool>,
+}
+
+#[test]
+fn test_ref_cell() {
+    let seller = Seller {
+        name: RefCell::new("Rizki".to_string()),
+        active: RefCell::new(true),
+    };
+
+    {
+        let mut result = seller.name.borrow_mut();
+
+        println!("{}", result);
+
+        *result = "Budi".to_string();
+
+        println!("{}", result);
+    }
+
+    println!("{:?}", seller);
+}
+
+// static APPLICATION: &str = "My Application";
+
+// #[test]
+// fn test_static() {
+//     println!("{}", APPLICATION);
+// }
+
+// static mut COUNTER: u32 = 0;
+
+// unsafe fn increment() {
+//     COUNTER += 1;
+// }
+
+// #[test]
+// fn test_static_mut() {
+//     unsafe {
+//         increment();
+//         COUNTER += 1;
+
+//         println!("Counter : {}", COUNTER);
+//     }
+// }
+
+macro_rules! hi {
+    () => {
+        println!("Hi macro!");
+    };
+
+    ($name: expr) => {
+        println!("Hi {}!", $name);
+    };
+}
+
+#[test]
+fn test_macro() {
+    hi!();
+    hi!("Eko");
+    hi! {
+        "Eko"
+    };
+
+    let name = "Rizki";
+    hi!(name);
+}
+
+macro_rules! iterate {
+    ($array:expr) => {
+        for i in $array {
+            println!("{}", i);
+        }
+    };
+
+    ($( $item:expr), *) => {
+        $(
+            println!("{}", $item);
+        )*
+    };
+}
+
+#[test]
+fn test_macro_iterate() {
+    iterate!([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    iterate!(1, 2, 3, 4, 5, 6, 7, 8, 9);
 }
