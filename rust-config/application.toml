@@ -1,0 +1,8 @@
+name = "My Application"
+
+[database]
+host = "localhost"
+port = 5432
+name = "my_database"
+user = "user"
+password = "password"
